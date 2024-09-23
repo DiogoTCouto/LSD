@@ -17,4 +17,4 @@ Laboratories of Digital Systems (Laboratórios de Sistemas Digitais)
 # Final Project 
 Programming language: vhdl
 
-Operating washing machine system in a FPGA (it wasn't working properly)
+Operating washing machine system in a FPGA (not everything was implemented/100% functional) The clock divider was with the wrong freq
