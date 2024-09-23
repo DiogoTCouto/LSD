@@ -1,0 +1,20 @@
+
+State Machine - |WashingMachine|MDVA:MDVA|s_currentState
+Name s_currentState.WATERIN1 s_currentState.SPIN1 s_currentState.WATEROUT3 s_currentState.WATEROUT2 s_currentState.WATEROUT1 s_currentState.ENXAGUAR2 s_currentState.ENXAGUAR1 s_currentState.WATERIN2 s_currentState.RESETMOD 
+s_currentState.RESETMOD 0 0 0 0 0 0 0 0 0 
+s_currentState.WATERIN2 0 0 0 0 0 0 0 1 1 
+s_currentState.ENXAGUAR1 0 0 0 0 0 0 1 0 1 
+s_currentState.ENXAGUAR2 0 0 0 0 0 1 0 0 1 
+s_currentState.WATEROUT1 0 0 0 0 1 0 0 0 1 
+s_currentState.WATEROUT2 0 0 0 1 0 0 0 0 1 
+s_currentState.WATEROUT3 0 0 1 0 0 0 0 0 1 
+s_currentState.SPIN1 0 1 0 0 0 0 0 0 1 
+s_currentState.WATERIN1 1 0 0 0 0 0 0 0 1 
+
+State Machine - |WashingMachine|FSM:FSM|s_currentState
+Name s_currentState.PG s_currentState.PG3 s_currentState.PG2 s_currentState.PG1 s_currentState.RESETMOD 
+s_currentState.RESETMOD 0 0 0 0 0 
+s_currentState.PG1 0 0 0 1 1 
+s_currentState.PG2 0 0 1 0 1 
+s_currentState.PG3 0 1 0 0 1 
+s_currentState.PG 1 0 0 0 1 
