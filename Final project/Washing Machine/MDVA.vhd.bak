@@ -1,0 +1,168 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+entity MDVA is
+port( reset : in std_logic; --switch
+		clk : in std_logic;
+		PGin : in std_logic_vector(2 downto 0);
+		water_valve : out std_logic;--------------------
+		water_pump : out std_logic;--Funcionalidades da maquina
+		rinse : out std_logic;--Ou seja, instruções!
+		spin : out std_logic;
+		wash_on : out std_logic;--------------------
+		finishOG : out std_logic;
+		newTime1 : out std_logic;
+		timeValue1 : out std_logic;
+		timeEnable1 : out std_logic;
+		timeExp1 : in std_logic);
+
+end MDVA;
+--falta alterar STOP
+
+architecture Behavioral of MDVA is
+
+type TState is (WATERIN1, WATERIN2, ENXAGUAR1, ENXAGUAR2, WATEROUT1, WATEROUT2, WATEROUT3, SPIN1, RESETMOD);
+signal s_currentState, s_nextState : TState; -- faltam os sinais de
+
+begin
+sync_proc: process(clk)
+begin
+	if (rising_edge(clk)) then
+		if reset = '1' then
+			s_currentState <= RESETMOD;
+		else
+			s_currentState <= s_nextState;
+		end if;
+	end if;
+end process;
+
+    comb_proc : process(s_currentState, PGin)
+    begin
+       
+case (s_currentState) is
+	when RESETMOD =>
+		water_valve <= '0';
+		water_pump <= '0';
+		rinse <= '0';
+		spin <= '0';
+		wash_on <= '0';
+		finishOG <= '0';
+
+	if PGin = "100" then
+		s_nextState <= WATERIN1;
+	elsif PGin = "010" then
+		s_nextState <= WATERIN1;
+	elsif PGin = "001" then
+			s_nextState <= SPIN1;
+	end if;
+
+	when WATERIN1 =>
+		water_valve <= '1';
+		water_pump <= '1';
+		rinse <= '0';
+		spin <= '0';
+		wash_on <= '1';
+
+
+	if PGin = "100" then
+		s_nextState <= ENXAGUAR1;
+	elsif PGin = "010" then
+		s_nextState <= ENXAGUAR1;
+	end if;
+
+
+	when ENXAGUAR1 =>
+		water_valve <= '0';
+		water_pump <= '0';
+		rinse <= '1';
+		spin <= '0';
+		wash_on <= '1';
+
+	if PGin = "100" then
+		s_nextState <= WATEROUT1;
+	elsif PGin = "010" then
+		s_nextState <= WATEROUT1;
+	end if;
+
+
+	when WATEROUT1 => -- é com estes sinais que se tira a água? ambiguidade
+		water_valve <= '1';
+		water_pump <= '0';
+		rinse <= '0';
+		spin <= '0';
+		wash_on <= '1';
+
+	if PGin = "100" then
+		s_nextState <= WATERIN2;
+	elsif PGin = "010" then
+		s_nextState <= SPIN1;
+	elsif PGin = "001" then
+		finishOG <= '1';
+	end if;
+
+	when WATERIN2 =>
+		water_valve <= '1';
+		water_pump <= '1';
+		rinse <= '0';
+		spin <= '0';
+		wash_on <= '1';
+	if PGin = "100" then
+		s_nextState <= ENXAGUAR2;
+	end if;
+
+	when ENXAGUAR2 =>
+		water_valve <= '0';
+		water_pump <= '0';
+		rinse <= '1';
+		spin <= '0';
+		wash_on <= '1';
+
+	if PGin = "100" then
+		s_nextState <= WATEROUT2;
+	end if;
+
+	when WATEROUT2 =>
+		water_valve <= '1';
+		water_pump <= '0';
+		rinse <= '0';
+		spin <= '0';
+		wash_on <= '1';
+
+	if PGin = "100" then
+		s_nextState <= SPIN1;
+	elsif PGin = "010" then
+		finishOG <= '1';
+	end if;
+
+
+	when SPIN1 =>
+		water_valve <= '0';
+		water_pump <= '0';
+		rinse <= '0';
+		spin <= '1';
+		wash_on <= '1';
+
+	if PGin = "100" then
+		s_nextState <= WATEROUT3;
+	elsif PGin = "010" then
+		s_nextState <= WATEROUT2;
+	end if;
+
+	when WATEROUT3 =>
+		water_valve <= '1';
+		water_pump <= '0';
+		rinse <= '0';
+		spin <= '0';
+		wash_on <= '1';
+
+	if PGin = "100" then
+		finishOG <= '1';
+	end if;
+
+
+        end case;
+
+    end process;
+
+end Behavioral;   

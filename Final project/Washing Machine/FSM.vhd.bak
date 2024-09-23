@@ -1,0 +1,98 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+entity FSM is
+port( reset : in std_logic; --switch
+clk : in std_logic;
+KEY0 : in std_logic; --SART/STOP
+KEY1 : in std_logic; --P1
+KEY2 : in std_logic; --P2
+KEY3 : in std_logic; --P3
+PGout : out std_logic_vector(2 downto 0);
+wash_onS : out std_logic;
+finishS : in std_logic);
+
+end FSM;
+--falta alterar STOP
+
+architecture Behavioral of FSM is
+
+type TState is (PG, PG1, PG2, PG3, RESETMOD);
+signal s_currentState, s_nextState : TState; -- faltam os sinais de
+
+begin
+	sync_proc: process(clk)
+	begin
+		if (rising_edge(clk)) then
+			if reset = '1' then
+				s_currentState <= RESETMOD;
+			else
+				s_currentState <= s_nextState;
+			end if;
+		end if;
+end process;
+
+    comb_proc : process(s_currentState, KEY0, KEY1, KEY2, KEY3)
+    begin
+       
+case (s_currentState) is
+ 
+when PG =>
+
+--comportamento falta RESET -- falta transmitir "P" para o display
+-- falta seleção com Start e Stop
+PGout <= "000";
+wash_onS <= '0';
+
+if KEY1 = '1' then
+s_nextState <= PG1;
+elsif KEY2 = '1' then
+s_nextState <= PG2;
+elsif KEY3 = '1' then
+s_nextState <= PG3;
+else
+s_nextState <= PG;
+end if;
+
+
+when PG1 =>
+-- falta RESET e segmentar o tempo
+PGout <= "100";
+wash_onS <= '1';
+
+if finishS = '1' then
+s_nextState <= PG;
+end if;
+
+
+when PG2 =>
+--comportamento PG2 falta RESET
+PGout <= "010";
+wash_onS <= '1';
+if finishS = '1' then
+s_nextState <= PG;
+end if;
+
+
+when PG3 =>
+--comportamento PG1 falta RESET
+PGout <= "001";
+wash_onS <= '1';
+
+if finishS = '1' then
+s_nextState <= PG;
+end if;
+
+
+when RESETMOD =>
+wash_onS <= '0';
+s_nextSate <= PG;
+
+
+
+        end case;
+
+    end process;
+
+end Behavioral;   
