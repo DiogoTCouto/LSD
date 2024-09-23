@@ -12,3 +12,9 @@ Laboratories of Digital Systems (Laboratórios de Sistemas Digitais)
 - Construção e utilização de testbenches.
 - Depuração de circuitos.
 - Precauções fundamentais de projeto nomeadamente: inicialização (reset), sincronização, geração e distribuição de sinais de relógio e restrições temporais.
+
+
+# Final Project 
+Programming language: vhdl
+
+Operating washing machine system in a FPGA (wasn't working properly)
